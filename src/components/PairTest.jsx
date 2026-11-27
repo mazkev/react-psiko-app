@@ -26,33 +26,35 @@ export default function PairTest({ testId, pairs, instruction, answers, onAnswer
       <TestHeader title={TITLES[testId]} subtitle={`Soal ${i + 1} dari ${total}`} answered={answered} total={total} onExit={onExit} />
       <Instruction>{instruction}</Instruction>
 
-      <div className="card">
-        <div className="pair-no">Nomor {i + 1}</div>
-        <div className="pair-options">
-          {['a', 'b'].map((side) => (
-            <button key={side} type="button" className={`pair-option ${answers[i] === side ? 'selected' : ''}`} onClick={() => choose(side)}>
-              <span className="pair-letter">{side.toUpperCase()}</span>
-              <span>{p[side].text}</span>
+      <div className="test-workspace">
+        <div className="card">
+          <div className="pair-no">Nomor {i + 1}</div>
+          <div className="pair-options">
+            {['a', 'b'].map((side) => (
+              <button key={side} type="button" className={`pair-option ${answers[i] === side ? 'selected' : ''}`} onClick={() => choose(side)}>
+                <span className="pair-letter">{side.toUpperCase()}</span>
+                <span>{p[side].text}</span>
+              </button>
+            ))}
+          </div>
+          <div className="nav-buttons">
+            <button className="btn ghost" disabled={i === 0} onClick={() => setI(i - 1)}>
+              ← Sebelumnya
             </button>
-          ))}
+            {i < total - 1 ? (
+              <button className="btn ghost" disabled={!isAnswered(i)} onClick={() => setI(i + 1)}>
+                Berikutnya →
+              </button>
+            ) : (
+              <button className="btn primary" disabled={answered < total} onClick={onFinish}>
+                Selesaikan Tes ✓
+              </button>
+            )}
+          </div>
         </div>
-        <div className="nav-buttons">
-          <button className="btn ghost" disabled={i === 0} onClick={() => setI(i - 1)}>
-            ← Sebelumnya
-          </button>
-          {i < total - 1 ? (
-            <button className="btn ghost" disabled={!isAnswered(i)} onClick={() => setI(i + 1)}>
-              Berikutnya →
-            </button>
-          ) : (
-            <button className="btn primary" disabled={answered < total} onClick={onFinish}>
-              Selesaikan Tes ✓
-            </button>
-          )}
-        </div>
-      </div>
 
-      <QuestionNav total={total} current={i} isAnswered={isAnswered} onJump={setI} />
+        <QuestionNav total={total} current={i} isAnswered={isAnswered} onJump={setI} />
+      </div>
       {answered === total && i !== total - 1 && (
         <div className="actions">
           <button className="btn primary lg" onClick={onFinish}>

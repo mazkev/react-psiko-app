@@ -60,29 +60,57 @@ function ParticipantForm({ initial, onSave }) {
   );
 }
 
+const CATEGORIES = {
+  ist: 'Kognitif & Penalaran',
+  disc: 'Kepribadian Perilaku',
+  papi: 'Gaya & Peran Kerja',
+  msdt: 'Kepemimpinan',
+  bdi: 'Skrining Emosional',
+  figural: 'Visual & Spasial',
+};
+
 export default function Home({ state, historyCount, onSaveParticipant, onStart, onContinue, onResults, onSaveHistory, onHistory, onReset }) {
   const [editing, setEditing] = useState(false);
   const { participant, done, answers } = state;
   const doneCount = TESTS.filter((t) => done[t.id]).length;
+  const pct = Math.round((doneCount / TESTS.length) * 100);
 
   return (
     <div className="home">
-      <section className="hero">
-        <div>
-          <span className="pill">Asesmen Psikologi & Karier · 6 Alat Tes</span>
+      <section className="hero-potensia">
+        <div className="hero-copy">
+          <span className="pill">Platform Asesmen Psikologi &amp; Karier</span>
           <h1>Kenali Potensi &amp; Arah Karier Anda</h1>
-          <p>
-            Ikuti rangkaian asesmen IST, DISC, PAPI Kostick, MSDT, BDI, dan Figural &amp; Spasial. Dapatkan analisa
-            kepribadian, gaya kerja, kekuatan kognitif, serta rekomendasi karier yang paling sesuai secara instan.
+          <p className="muted">
+            Ikuti rangkaian 6 alat tes terstruktur (IST, DISC, PAPI Kostick, MSDT, BDI, dan Figural &amp; Spasial) untuk
+            memetakan kekuatan kognitif, gaya kerja, kepemimpinan, serta rekomendasi karier yang paling sesuai.
           </p>
-        </div>
-        <div className="hero-stat">
-          <div className="ring" style={{ '--p': (doneCount / TESTS.length) * 100 }}>
-            <span>
-              {doneCount}/{TESTS.length}
-            </span>
+          <div className="hero-highlights">
+            <span>✓ 6 Alat Tes Terpadu</span>
+            <span>✓ Analisa &amp; Career Match Instan</span>
+            <span>✓ Cetak PDF &amp; Riwayat</span>
           </div>
-          <small>tes selesai</small>
+        </div>
+        <div className="hero-panel">
+          <div className="hero-panel-top">
+            <span className="muted small">Progres Asesmen</span>
+            <b>
+              {doneCount}/{TESTS.length} Selesai
+            </b>
+          </div>
+          <div className="progress" style={{ height: 10, margin: '8px 0 10px' }}>
+            <div className="progress-fill" style={{ width: `${pct}%` }} />
+          </div>
+          <p className="muted small" style={{ marginBottom: 14 }}>
+            {doneCount === 0
+              ? 'Isi data peserta lalu pilih salah satu modul tes di bawah untuk memulai.'
+              : doneCount < TESTS.length
+              ? `Masih ada ${TESTS.length - doneCount} modul tersisa untuk analisa lengkap.`
+              : 'Semua modul selesai! Anda dapat melihat laporan lengkap atau menyimpannya ke riwayat.'}
+          </p>
+          <button className="btn primary" style={{ width: '100%' }} disabled={!doneCount} onClick={onResults}>
+            Lihat Laporan &amp; Analisa →
+          </button>
         </div>
       </section>
 
@@ -115,6 +143,14 @@ export default function Home({ state, historyCount, onSaveParticipant, onStart, 
             </div>
           </div>
 
+          <div className="section-title-row">
+            <div>
+              <h2>Daftar Modul Asesmen</h2>
+              <p className="muted small">Pilih modul tes yang ingin dikerjakan. Progres tersimpan otomatis.</p>
+            </div>
+            <span className="muted small">{TESTS.length} Modul Tersedia</span>
+          </div>
+
           <div className="test-grid">
             {TESTS.map((t, i) => {
               const answered = Object.keys(answers[t.id] || {}).length;
@@ -123,8 +159,8 @@ export default function Home({ state, historyCount, onSaveParticipant, onStart, 
               return (
                 <div className={`card test-card ${isDone ? 'done' : ''}`} key={t.id} style={{ '--c': t.color }}>
                   <div className="test-card-head">
-                    <span className="test-icon">{t.icon}</span>
-                    <span className="test-no">Tes {i + 1}</span>
+                    <span className="test-icon-box">{t.icon}</span>
+                    <span className="test-cat">{CATEGORIES[t.id] || `Tes ${i + 1}`}</span>
                   </div>
                   <h3>{t.name}</h3>
                   <p className="test-full">{t.fullName}</p>
@@ -133,22 +169,24 @@ export default function Home({ state, historyCount, onSaveParticipant, onStart, 
                     <span>📝 {t.items} soal</span>
                     <span>⏱ ±{t.minutes} menit</span>
                   </div>
-                  {isDone ? (
-                    <div className="row-gap">
-                      <span className="badge good">✓ Selesai</span>
-                      <button className="btn ghost sm" onClick={() => window.confirm('Ulangi tes ini? Jawaban sebelumnya akan dihapus.') && onStart(t.id)}>
-                        Ulangi
+                  <div className="test-card-foot">
+                    {isDone ? (
+                      <div className="row-gap" style={{ width: '100%', justifyContent: 'space-between' }}>
+                        <span className="badge good">✓ Selesai</span>
+                        <button className="btn ghost sm" onClick={() => window.confirm('Ulangi tes ini? Jawaban sebelumnya akan dihapus.') && onStart(t.id)}>
+                          Ulangi
+                        </button>
+                      </div>
+                    ) : inProgress ? (
+                      <button className="btn primary" style={{ width: '100%' }} onClick={() => onContinue(t.id)}>
+                        Lanjutkan ({answered}/{t.items})
                       </button>
-                    </div>
-                  ) : inProgress ? (
-                    <button className="btn primary" onClick={() => onContinue(t.id)}>
-                      Lanjutkan ({answered} terjawab)
-                    </button>
-                  ) : (
-                    <button className="btn primary" onClick={() => onStart(t.id)}>
-                      Mulai Tes
-                    </button>
-                  )}
+                    ) : (
+                      <button className="btn primary" style={{ width: '100%' }} onClick={() => onStart(t.id)}>
+                        Mulai Tes →
+                      </button>
+                    )}
+                  </div>
                 </div>
               );
             })}

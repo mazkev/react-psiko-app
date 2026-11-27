@@ -35,19 +35,33 @@ export function TestHeader({ title, subtitle, answered, total, onExit, right }) 
 }
 
 export function QuestionNav({ total, current, isAnswered, onJump }) {
+  const done = Array.from({ length: total }, (_, i) => isAnswered(i)).filter(Boolean).length;
   return (
-    <div className="qnav">
-      {Array.from({ length: total }, (_, i) => (
-        <button
-          key={i}
-          className={`qnav-item ${i === current ? 'current' : ''} ${isAnswered(i) ? 'answered' : ''}`}
-          onClick={() => onJump(i)}
-          type="button"
-        >
-          {i + 1}
-        </button>
-      ))}
-    </div>
+    <aside className="card qnav-card">
+      <div className="qnav-head">
+        <b>Navigasi Soal</b>
+        <span className="muted small">
+          {done}/{total}
+        </span>
+      </div>
+      <div className="qnav">
+        {Array.from({ length: total }, (_, i) => (
+          <button
+            key={i}
+            className={`qnav-item ${i === current ? 'current' : ''} ${isAnswered(i) ? 'answered' : ''}`}
+            onClick={() => onJump(i)}
+            type="button"
+          >
+            {i + 1}
+          </button>
+        ))}
+      </div>
+      <div className="qnav-legend">
+        <span><i className="dot cur" /> Aktif</span>
+        <span><i className="dot ans" /> Terjawab</span>
+        <span><i className="dot" /> Belum</span>
+      </div>
+    </aside>
   );
 }
 

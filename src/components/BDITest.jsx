@@ -25,34 +25,36 @@ export default function BDITest({ answers, onAnswer, onFinish, onExit }) {
         perasaan Anda <b>selama dua minggu terakhir, termasuk hari ini</b>. Tidak ada jawaban benar atau salah.
       </Instruction>
 
-      <div className="card">
-        <div className="pair-no">
-          {i + 1}. {item.title}
-        </div>
-        <div className="options stack">
-          {item.options.map((o, s) => (
-            <button key={s} type="button" className={`option block ${answers[i] === s ? 'selected' : ''}`} onClick={() => choose(s)}>
-              <span className="radio-dot" /> {o}
+      <div className="test-workspace">
+        <div className="card">
+          <div className="pair-no">
+            {i + 1}. {item.title}
+          </div>
+          <div className="options stack">
+            {item.options.map((o, s) => (
+              <button key={s} type="button" className={`option block ${answers[i] === s ? 'selected' : ''}`} onClick={() => choose(s)}>
+                <span className="radio-dot" /> {o}
+              </button>
+            ))}
+          </div>
+          <div className="nav-buttons">
+            <button className="btn ghost" disabled={i === 0} onClick={() => setI(i - 1)}>
+              ← Sebelumnya
             </button>
-          ))}
+            {i < total - 1 ? (
+              <button className="btn ghost" disabled={!isAnswered(i)} onClick={() => setI(i + 1)}>
+                Berikutnya →
+              </button>
+            ) : (
+              <button className="btn primary" disabled={answered < total} onClick={onFinish}>
+                Selesaikan Tes ✓
+              </button>
+            )}
+          </div>
         </div>
-        <div className="nav-buttons">
-          <button className="btn ghost" disabled={i === 0} onClick={() => setI(i - 1)}>
-            ← Sebelumnya
-          </button>
-          {i < total - 1 ? (
-            <button className="btn ghost" disabled={!isAnswered(i)} onClick={() => setI(i + 1)}>
-              Berikutnya →
-            </button>
-          ) : (
-            <button className="btn primary" disabled={answered < total} onClick={onFinish}>
-              Selesaikan Tes ✓
-            </button>
-          )}
-        </div>
-      </div>
 
-      <QuestionNav total={total} current={i} isAnswered={isAnswered} onJump={setI} />
+        <QuestionNav total={total} current={i} isAnswered={isAnswered} onJump={setI} />
+      </div>
       {answered === total && i !== total - 1 && (
         <div className="actions">
           <button className="btn primary lg" onClick={onFinish}>

@@ -186,38 +186,68 @@ export default function App() {
       );
   }
 
+  const doneCount = Object.keys(state.done).length;
+
   return (
     <div className="app">
       <header className="topbar no-print">
-        <div
-          className="brand"
-          onClick={() => {
-            setHistoryEntry(null);
-            setView('home');
-          }}
-        >
-          <span className="brand-logo">Ψ</span>
-          <span>
-            <strong>PsikoTes</strong>
-            <small>Asesmen Psikologi Terpadu</small>
-          </span>
-        </div>
-        <div className="row-gap">
-          <button
-            className="btn ghost sm"
+        <div className="topbar-inner">
+          <div
+            className="brand"
             onClick={() => {
               setHistoryEntry(null);
-              setView('history');
+              setView('home');
             }}
           >
-            🗂 Riwayat ({history.length})
-          </button>
-          {state.participant && (
-            <div className="topbar-user">
-              <span className="avatar">{state.participant.name.charAt(0).toUpperCase()}</span>
-              <span>{state.participant.name}</span>
-            </div>
-          )}
+            <span className="brand-logo">Ψ</span>
+            <span>
+              <strong>PsikoTes</strong>
+              <small>Potensi &amp; Asesmen Karier</small>
+            </span>
+          </div>
+
+          <nav className="nav-links">
+            <button
+              type="button"
+              className={`nav-link ${view === 'home' ? 'active' : ''}`}
+              onClick={() => {
+                setHistoryEntry(null);
+                setView('home');
+              }}
+            >
+              Beranda
+            </button>
+            <button
+              type="button"
+              className={`nav-link ${view === 'history' ? 'active' : ''}`}
+              onClick={() => {
+                setHistoryEntry(null);
+                setView('history');
+              }}
+            >
+              Riwayat <span className="nav-badge">{history.length}</span>
+            </button>
+            <button
+              type="button"
+              className={`nav-link ${view === 'results' && !historyEntry ? 'active' : ''}`}
+              disabled={!doneCount}
+              onClick={() => {
+                setHistoryEntry(null);
+                setView('results');
+              }}
+            >
+              Hasil &amp; Analisa
+            </button>
+          </nav>
+
+          <div className="row-gap">
+            {state.participant && (
+              <div className="topbar-user">
+                <span className="avatar">{state.participant.name.charAt(0).toUpperCase()}</span>
+                <span>{state.participant.name}</span>
+              </div>
+            )}
+          </div>
         </div>
       </header>
       <main className="container">{content}</main>
