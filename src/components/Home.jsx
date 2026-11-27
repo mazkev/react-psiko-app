@@ -60,7 +60,7 @@ function ParticipantForm({ initial, onSave }) {
   );
 }
 
-export default function Home({ state, onSaveParticipant, onStart, onContinue, onResults, onReset }) {
+export default function Home({ state, historyCount, onSaveParticipant, onStart, onContinue, onResults, onSaveHistory, onHistory, onReset }) {
   const [editing, setEditing] = useState(false);
   const { participant, done, answers } = state;
   const doneCount = TESTS.filter((t) => done[t.id]).length;
@@ -165,9 +165,19 @@ export default function Home({ state, onSaveParticipant, onStart, onContinue, on
                   : 'Selesaikan minimal satu tes untuk melihat hasil.'}
               </p>
             </div>
-            <button className="btn primary lg" disabled={!doneCount} onClick={onResults}>
-              Lihat Hasil & Analisa →
-            </button>
+            <div className="row-gap">
+              {historyCount > 0 && (
+                <button className="btn ghost" onClick={onHistory}>
+                  🗂 Riwayat ({historyCount})
+                </button>
+              )}
+              <button className="btn ghost" disabled={!doneCount} onClick={onSaveHistory}>
+                💾 Simpan ke Riwayat
+              </button>
+              <button className="btn primary lg" disabled={!doneCount} onClick={onResults}>
+                Lihat Hasil & Analisa →
+              </button>
+            </div>
           </div>
         </>
       )}

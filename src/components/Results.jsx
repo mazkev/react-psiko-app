@@ -568,7 +568,7 @@ function BDIResult({ r }) {
 }
 
 /* ----------------------------- MAIN ----------------------------- */
-export default function Results({ state, onBack, onReset }) {
+export default function Results({ state, isArchived, onSaveHistory, onBack, onReset }) {
   const { participant, answers, done } = state;
   const r = useMemo(() => scoreAll(answers, done), [answers, done]);
   const overall = useMemo(() => buildOverall(r, participant), [r, participant]);
@@ -590,6 +590,11 @@ export default function Results({ state, onBack, onReset }) {
           ← Kembali
         </button>
         <div className="row-gap">
+          {onSaveHistory && (
+            <button className="btn ghost" onClick={onSaveHistory}>
+              💾 Simpan ke Riwayat
+            </button>
+          )}
           <button className="btn ghost" onClick={exportJSON}>
             ⬇ Export JSON
           </button>
@@ -601,7 +606,7 @@ export default function Results({ state, onBack, onReset }) {
 
       <div className="card report-head">
         <div>
-          <span className="pill">Laporan Hasil Psikotes</span>
+          <span className="pill">{isArchived ? 'Arsip Laporan Hasil Psikotes' : 'Laporan Hasil Psikotes'}</span>
           <h1>{participant?.name}</h1>
           <p className="muted">
             {participant?.age} tahun · {participant?.gender}

@@ -325,6 +325,17 @@ details.answers[open] { padding-bottom: 12px; }
 .recs { margin-top: 16px; padding: 16px 18px; border-radius: 14px; background: #f0fdf4; border: 1px solid #bbf7d0; }
 .recs h4 { margin-top: 0; color: #047857; }
 
+/* History */
+.history-list { display: flex; flex-direction: column; gap: 12px; margin-top: 14px; }
+.history-item {
+  display: flex; align-items: center; gap: 16px; padding: 16px; border-radius: 14px;
+  border: 1.5px solid var(--border); background: #f8fafc; flex-wrap: wrap;
+}
+.history-item.selected { border-color: var(--primary); background: #f8faff; }
+.history-check { flex-direction: row; align-items: center; gap: 6px; font-size: 0.82rem; color: var(--muted); cursor: pointer; }
+.history-check input { width: 16px; height: 16px; padding: 0; }
+.history-info { flex: 1; min-width: 220px; }
+
 /* Responsive */
 @media (max-width: 760px) {
   h1 { font-size: 1.6rem; }

@@ -5,10 +5,12 @@ import DISCTest from './components/DISCTest.jsx';
 import PairTest from './components/PairTest.jsx';
 import BDITest from './components/BDITest.jsx';
 import Results from './components/Results.jsx';
+import History from './components/History.jsx';
 import { PAPI_PAIRS } from './data/papi.js';
 import { MSDT_PAIRS } from './data/msdt.js';
 
 const KEY = 'psikotes-app-v1';
+const HIST_KEY = 'psikotes-history-v1';
 const empty = () => ({
   participant: null,
   answers: { ist: {}, disc: {}, papi: {}, msdt: {}, bdi: {} },
@@ -24,16 +26,43 @@ function load() {
   }
 }
 
+function loadHistory() {
+  try {
+    const h = JSON.parse(localStorage.getItem(HIST_KEY));
+    return Array.isArray(h) ? h : [];
+  } catch {
+    return [];
+  }
+}
+
 export default function App() {
   const [state, setState] = useState(load);
+  const [history, setHistory] = useState(loadHistory);
+  const [historyEntry, setHistoryEntry] = useState(null);
   const [view, setView] = useState('home');
 
   useEffect(() => {
     localStorage.setItem(KEY, JSON.stringify(state));
   }, [state]);
   useEffect(() => {
+    localStorage.setItem(HIST_KEY, JSON.stringify(history));
+  }, [history]);
+  useEffect(() => {
     window.scrollTo(0, 0);
   }, [view]);
+
+  const saveToHistory = () => {
+    if (!Object.keys(state.done).length) return;
+    const entry = {
+      id: `${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
+      savedAt: new Date().toISOString(),
+      participant: state.participant,
+      answers: state.answers,
+      done: state.done,
+    };
+    setHistory((h) => [entry, ...h]);
+    window.alert('Hasil sesi saat ini berhasil disimpan ke Riwayat!');
+  };
 
   const setAnswer = (test) => (key, value) =>
     setState((s) => ({ ...s, answers: { ...s.answers, [test]: { ...s.answers[test], [key]: value } } }));
@@ -103,9 +132,34 @@ export default function App() {
     case 'results':
       content = (
         <Results
-          state={state}
-          onBack={() => setView('home')}
+          state={historyEntry || state}
+          isArchived={!!historyEntry}
+          onSaveHistory={!historyEntry ? saveToHistory : null}
+          onBack={() => {
+            if (historyEntry) {
+              setHistoryEntry(null);
+              setView('history');
+            } else {
+              setView('home');
+            }
+          }}
           onReset={resetAll}
+        />
+      );
+      break;
+    case 'history':
+      content = (
+        <History
+          history={history}
+          onBack={() => setView('home')}
+          onViewEntry={(entry) => {
+            setHistoryEntry(entry);
+            setView('results');
+          }}
+          onDeleteEntry={(id) => setHistory((h) => h.filter((x) => x.id !== id))}
+          onClearHistory={() => {
+            if (window.confirm('Hapus semua riwayat tersimpan?')) setHistory([]);
+          }}
         />
       );
       break;
@@ -113,10 +167,16 @@ export default function App() {
       content = (
         <Home
           state={state}
+          historyCount={history.length}
           onSaveParticipant={(p) => setState((s) => ({ ...s, participant: p }))}
           onStart={startTest}
           onContinue={(t) => setView(t)}
-          onResults={() => setView('results')}
+          onResults={() => {
+            setHistoryEntry(null);
+            setView('results');
+          }}
+          onSaveHistory={saveToHistory}
+          onHistory={() => setView('history')}
           onReset={resetAll}
         />
       );
@@ -125,19 +185,36 @@ export default function App() {
   return (
     <div className="app">
       <header className="topbar no-print">
-        <div className="brand" onClick={() => setView('home')}>
+        <div
+          className="brand"
+          onClick={() => {
+            setHistoryEntry(null);
+            setView('home');
+          }}
+        >
           <span className="brand-logo">Ψ</span>
           <span>
             <strong>PsikoTes</strong>
             <small>Asesmen Psikologi Terpadu</small>
           </span>
         </div>
-        {state.participant && (
-          <div className="topbar-user">
-            <span className="avatar">{state.participant.name.charAt(0).toUpperCase()}</span>
-            <span>{state.participant.name}</span>
-          </div>
-        )}
+        <div className="row-gap">
+          <button
+            className="btn ghost sm"
+            onClick={() => {
+              setHistoryEntry(null);
+              setView('history');
+            }}
+          >
+            🗂 Riwayat ({history.length})
+          </button>
+          {state.participant && (
+            <div className="topbar-user">
+              <span className="avatar">{state.participant.name.charAt(0).toUpperCase()}</span>
+              <span>{state.participant.name}</span>
+            </div>
+          )}
+        </div>
       </header>
       <main className="container">{content}</main>
       <footer className="footer no-print">
