@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { BDI_ITEMS } from '../data/bdi.js';
 import { TestHeader, QuestionNav, Instruction } from './common.jsx';
 
@@ -8,6 +8,8 @@ export default function BDITest({ answers, onAnswer, onFinish, onExit }) {
   const firstOpen = BDI_ITEMS.findIndex((_, k) => !isAnswered(k));
   const [i, setI] = useState(firstOpen === -1 ? 0 : firstOpen);
   const timer = useRef();
+
+  useEffect(() => () => clearTimeout(timer.current), []);
   const answered = BDI_ITEMS.filter((_, k) => isAnswered(k)).length;
   const item = BDI_ITEMS[i];
 

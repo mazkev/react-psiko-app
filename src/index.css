@@ -390,6 +390,12 @@ details.answers[open] { padding-bottom: 12px; }
 .history-check input { width: 16px; height: 16px; padding: 0; }
 .history-info { flex: 1; min-width: 220px; }
 
+.toast {
+  position: fixed; bottom: 24px; right: 24px; z-index: 50;
+  background: #232c4e; color: #fff; padding: 12px 18px; border-radius: 8px;
+  font-weight: 700; font-size: 0.9rem; box-shadow: 0 8px 24px rgba(16, 22, 26, 0.22);
+}
+
 /* Responsive */
 @media (max-width: 960px) {
   .test-grid { grid-template-columns: repeat(2, 1fr); }

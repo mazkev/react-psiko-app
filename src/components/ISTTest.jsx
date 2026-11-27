@@ -4,15 +4,17 @@ import { LETTERS, formatTime } from '../utils.js';
 import { TestHeader, Instruction } from './common.jsx';
 import FiguralSvg from './FiguralSvg.jsx';
 
-export default function ISTTest({ answers, onAnswer, onFinish, onExit }) {
-  // Saat melanjutkan, mulai dari subtes pertama yang belum dijawab penuh
+export default function ISTTest({ answers, timers = {}, onTickTime, onAnswer, onFinish, onExit }) {
+  // Saat melanjutkan, mulai dari subtes pertama yang belum dijawab penuh atau punya sisa waktu
   const [idx, setIdx] = useState(() => {
     const k = IST_SUBTESTS.findIndex((s) => s.items.some((it) => !answers[it.id]));
     return k === -1 ? 0 : k;
   });
-  const [phase, setPhase] = useState('intro'); // intro | test
-  const [timeLeft, setTimeLeft] = useState(0);
   const st = IST_SUBTESTS[idx];
+  const timerKey = `ist-${st.code}`;
+  const hasSaved = typeof timers[timerKey] === 'number' && timers[timerKey] > 0 && timers[timerKey] < st.seconds;
+  const [phase, setPhase] = useState(() => (hasSaved ? 'test' : 'intro')); // intro | test
+  const [timeLeft, setTimeLeft] = useState(() => (hasSaved ? timers[timerKey] : 0));
   const isLast = idx === IST_SUBTESTS.length - 1;
   const answered = Object.values(answers).filter((v) => v !== '' && v != null).length;
 
@@ -27,6 +29,7 @@ export default function ISTTest({ answers, onAnswer, onFinish, onExit }) {
 
   useEffect(() => {
     if (phase !== 'test') return;
+    onTickTime?.(timerKey, timeLeft);
     if (timeLeft <= 0) {
       next();
       return;

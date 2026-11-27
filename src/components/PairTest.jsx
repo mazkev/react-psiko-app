@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { TestHeader, QuestionNav, Instruction } from './common.jsx';
 
 const TITLES = {
@@ -12,6 +12,8 @@ export default function PairTest({ testId, pairs, instruction, answers, onAnswer
   const firstOpen = pairs.findIndex((_, k) => !isAnswered(k));
   const [i, setI] = useState(firstOpen === -1 ? 0 : firstOpen);
   const timer = useRef();
+
+  useEffect(() => () => clearTimeout(timer.current), []);
   const answered = pairs.filter((_, k) => isAnswered(k)).length;
   const p = pairs[i];
 

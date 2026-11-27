@@ -12,16 +12,18 @@ import { MSDT_PAIRS } from './data/msdt.js';
 
 const KEY = 'psikotes-app-v1';
 const HIST_KEY = 'psikotes-history-v1';
+const VALID_VIEWS = new Set(['home', 'ist', 'disc', 'papi', 'msdt', 'bdi', 'figural', 'results', 'history']);
 const empty = () => ({
   participant: null,
   answers: { ist: {}, disc: {}, papi: {}, msdt: {}, bdi: {}, figural: {} },
   done: {},
+  timers: {},
 });
 
 function load() {
   try {
     const s = JSON.parse(localStorage.getItem(KEY));
-    return s ? { ...empty(), ...s, answers: { ...empty().answers, ...s.answers } } : empty();
+    return s ? { ...empty(), ...s, answers: { ...empty().answers, ...s.answers }, timers: { ...s.timers } } : empty();
   } catch {
     return empty();
   }
@@ -36,11 +38,17 @@ function loadHistory() {
   }
 }
 
+function viewFromHash() {
+  const h = window.location.hash.replace(/^#/, '');
+  return VALID_VIEWS.has(h) ? h : 'home';
+}
+
 export default function App() {
   const [state, setState] = useState(load);
   const [history, setHistory] = useState(loadHistory);
   const [historyEntry, setHistoryEntry] = useState(null);
-  const [view, setView] = useState('home');
+  const [view, setView] = useState(viewFromHash);
+  const [toast, setToast] = useState(null);
 
   useEffect(() => {
     localStorage.setItem(KEY, JSON.stringify(state));
@@ -49,11 +57,28 @@ export default function App() {
     localStorage.setItem(HIST_KEY, JSON.stringify(history));
   }, [history]);
   useEffect(() => {
+    if (window.location.hash !== `#${view}`) window.location.hash = view;
     window.scrollTo(0, 0);
   }, [view]);
+  useEffect(() => {
+    const onHash = () => setView(viewFromHash());
+    window.addEventListener('hashchange', onHash);
+    return () => window.removeEventListener('hashchange', onHash);
+  }, []);
+  useEffect(() => {
+    if (!toast) return;
+    const t = setTimeout(() => setToast(null), 3200);
+    return () => clearTimeout(t);
+  }, [toast]);
 
   const saveToHistory = () => {
     if (!Object.keys(state.done).length) return;
+    const sig = JSON.stringify({ p: state.participant, d: state.done, a: state.answers });
+    const exists = history.some((h) => JSON.stringify({ p: h.participant, d: h.done, a: h.answers }) === sig);
+    if (exists) {
+      setToast('Sesi ini sudah tersimpan di Riwayat.');
+      return;
+    }
     const entry = {
       id: `${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
       savedAt: new Date().toISOString(),
@@ -62,24 +87,39 @@ export default function App() {
       done: state.done,
     };
     setHistory((h) => [entry, ...h]);
-    window.alert('Hasil sesi saat ini berhasil disimpan ke Riwayat!');
+    setToast('Hasil sesi berhasil disimpan ke Riwayat!');
   };
 
   const setAnswer = (test) => (key, value) =>
     setState((s) => ({ ...s, answers: { ...s.answers, [test]: { ...s.answers[test], [key]: value } } }));
 
+  const onTickTime = (timerKey, sec) =>
+    setState((s) => (s.timers?.[timerKey] === sec ? s : { ...s, timers: { ...s.timers, [timerKey]: sec } }));
+
+  const clearTimersFor = (timers, test) => {
+    const next = { ...timers };
+    Object.keys(next).forEach((k) => {
+      if (k === test || k.startsWith(`${test}-`)) delete next[k];
+    });
+    return next;
+  };
+
   const finish = (test) => () => {
-    setState((s) => ({ ...s, done: { ...s.done, [test]: new Date().toISOString() } }));
+    setState((s) => ({
+      ...s,
+      done: { ...s.done, [test]: new Date().toISOString() },
+      timers: clearTimersFor(s.timers, test),
+    }));
     setView('home');
   };
 
   const startTest = (test) => {
-    // Mengulang tes yang sudah selesai akan menghapus jawaban sebelumnya
+    // Mengulang tes yang sudah selesai akan menghapus jawaban & timer sebelumnya
     if (state.done[test]) {
       setState((s) => {
         const done = { ...s.done };
         delete done[test];
-        return { ...s, done, answers: { ...s.answers, [test]: {} } };
+        return { ...s, done, answers: { ...s.answers, [test]: {} }, timers: clearTimersFor(s.timers, test) };
       });
     }
     setView(test);
@@ -102,7 +142,7 @@ export default function App() {
   let content;
   switch (view) {
     case 'ist':
-      content = <ISTTest {...common('ist')} />;
+      content = <ISTTest {...common('ist')} timers={state.timers} onTickTime={onTickTime} />;
       break;
     case 'disc':
       content = <DISCTest {...common('disc')} />;
@@ -131,7 +171,7 @@ export default function App() {
       content = <BDITest {...common('bdi')} />;
       break;
     case 'figural':
-      content = <FiguralTest {...common('figural')} />;
+      content = <FiguralTest {...common('figural')} savedTime={state.timers?.figural} onTickTime={onTickTime} />;
       break;
     case 'results':
       content = (
@@ -253,6 +293,7 @@ export default function App() {
         </div>
       </header>
       <main className="container">{content}</main>
+      {toast && <div className="toast no-print">{toast}</div>}
       <footer className="footer no-print">
         Hasil tes ini bersifat indikatif untuk keperluan latihan/edukasi dan tidak menggantikan asesmen oleh psikolog profesional.
       </footer>

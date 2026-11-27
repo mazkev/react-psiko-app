@@ -4,14 +4,15 @@ import { LETTERS, formatTime } from '../utils.js';
 import { TestHeader, QuestionNav, Instruction } from './common.jsx';
 import FiguralSvg from './FiguralSvg.jsx';
 
-export default function FiguralTest({ answers, onAnswer, onFinish, onExit }) {
+export default function FiguralTest({ answers, savedTime, onTickTime, onAnswer, onFinish, onExit }) {
   const total = FIGURAL_ITEMS.length;
   const isAnswered = (k) => !!answers[FIGURAL_ITEMS[k].id];
   const firstOpen = FIGURAL_ITEMS.findIndex((_, k) => !isAnswered(k));
   const [i, setI] = useState(firstOpen === -1 ? 0 : firstOpen);
-  const [timeLeft, setTimeLeft] = useState(FIGURAL_SECONDS);
+  const [timeLeft, setTimeLeft] = useState(() => (typeof savedTime === 'number' && savedTime > 0 ? savedTime : FIGURAL_SECONDS));
 
   useEffect(() => {
+    onTickTime?.('figural', timeLeft);
     if (timeLeft <= 0) {
       onFinish();
       return;
