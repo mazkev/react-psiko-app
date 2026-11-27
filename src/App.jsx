@@ -199,10 +199,10 @@ export default function App() {
               setView('home');
             }}
           >
-            <span className="brand-logo">Ψ</span>
+            <span className="brand-logo">P</span>
             <span>
               <strong>PsikoTes</strong>
-              <small>Potensi &amp; Asesmen Karier</small>
+              <small>Asesmen Potensi &amp; Karier</small>
             </span>
           </div>
 
@@ -236,16 +236,18 @@ export default function App() {
                 setView('results');
               }}
             >
-              Hasil &amp; Analisa
+              Laporan Hasil
             </button>
           </nav>
 
           <div className="row-gap">
-            {state.participant && (
+            {state.participant ? (
               <div className="topbar-user">
                 <span className="avatar">{state.participant.name.charAt(0).toUpperCase()}</span>
                 <span>{state.participant.name}</span>
               </div>
+            ) : (
+              <span className="nav-status">6 Modul Siap</span>
             )}
           </div>
         </div>

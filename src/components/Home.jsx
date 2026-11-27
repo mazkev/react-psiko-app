@@ -158,31 +158,35 @@ export default function Home({ state, historyCount, onSaveParticipant, onStart, 
               const inProgress = !isDone && answered > 0;
               return (
                 <div className={`card test-card ${isDone ? 'done' : ''}`} key={t.id} style={{ '--c': t.color }}>
-                  <div className="test-card-head">
+                  <div className="test-card-main">
                     <span className="test-icon-box">{t.icon}</span>
-                    <span className="test-cat">{CATEGORIES[t.id] || `Tes ${i + 1}`}</span>
-                  </div>
-                  <h3>{t.name}</h3>
-                  <p className="test-full">{t.fullName}</p>
-                  <p className="muted small">{t.desc}</p>
-                  <div className="test-meta">
-                    <span>📝 {t.items} soal</span>
-                    <span>⏱ ±{t.minutes} menit</span>
+                    <div className="test-card-body">
+                      <div className="test-card-head">
+                        <h3>{t.name}</h3>
+                        <span className="test-cat">{CATEGORIES[t.id] || `Tes ${i + 1}`}</span>
+                      </div>
+                      <p className="test-full">{t.fullName}</p>
+                      <p className="muted small">{t.desc}</p>
+                    </div>
                   </div>
                   <div className="test-card-foot">
+                    <div className="test-meta">
+                      <span>{t.items} soal</span>
+                      <span>±{t.minutes} mnt</span>
+                    </div>
                     {isDone ? (
-                      <div className="row-gap" style={{ width: '100%', justifyContent: 'space-between' }}>
+                      <div className="row-gap">
                         <span className="badge good">✓ Selesai</span>
                         <button className="btn ghost sm" onClick={() => window.confirm('Ulangi tes ini? Jawaban sebelumnya akan dihapus.') && onStart(t.id)}>
                           Ulangi
                         </button>
                       </div>
                     ) : inProgress ? (
-                      <button className="btn primary" style={{ width: '100%' }} onClick={() => onContinue(t.id)}>
+                      <button className="btn primary sm" onClick={() => onContinue(t.id)}>
                         Lanjutkan ({answered}/{t.items})
                       </button>
                     ) : (
-                      <button className="btn primary" style={{ width: '100%' }} onClick={() => onStart(t.id)}>
+                      <button className="btn primary sm" onClick={() => onStart(t.id)}>
                         Mulai Tes →
                       </button>
                     )}
