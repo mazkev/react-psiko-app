@@ -53,9 +53,9 @@ function ISTResult({ r }) {
           <b>{r.category}</b>
         </div>
         <div className="kpi">
-          <span>Verbal / Numerik</span>
+          <span>Verbal / Numerik / Logika</span>
           <b>
-            {pct(r.verbal)} / {pct(r.numeric)}
+            {pct(r.verbal)} / {pct(r.numeric)} / {pct(r.logic)}
           </b>
         </div>
       </div>
@@ -299,6 +299,9 @@ function PAPIResult({ r, answers }) {
 
       <Analysis>
         <p>{r.summary}</p>
+        <p>
+          <b>Keseimbangan Kebutuhan vs Peran:</b> {r.balanceNote}
+        </p>
         <ul>
           {r.notes.map((n) => (
             <li key={n}>{n}</li>
@@ -516,6 +519,9 @@ function BDIResult({ r }) {
       <Analysis>
         <p>{r.summary}</p>
         <p>{r.level.desc}</p>
+        <p>
+          <b>Kesiapan & Stabilitas Emosional:</b> {r.readiness}
+        </p>
         <p>
           <b>Saran:</b> {r.level.advice}
         </p>

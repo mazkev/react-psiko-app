@@ -144,6 +144,73 @@ export const IST_SUBTESTS = [
       { id: 'ZR-5', q: '81, 27, 9, 3, ?', answer: 1 },
     ],
   },
+  {
+    code: 'LO',
+    name: 'Logisches Denken',
+    label: 'Penalaran Logis (Pilihan Ganda)',
+    type: 'mc',
+    seconds: 240,
+    measures: 'Kemampuan berpikir deduktif, silogisme, penarikan kesimpulan sah, dan penalaran analitik.',
+    instruction: 'Bacalah premis atau informasi pada setiap soal dengan cermat, lalu pilih satu kesimpulan atau jawaban yang paling logis dan sah.',
+    example: {
+      q: 'Semua mamalia bernapas dengan paru-paru. Paus adalah mamalia. Kesimpulannya adalah...',
+      options: ['Paus bernapas dengan insang', 'Paus bernapas dengan paru-paru', 'Semua yang bernapas dengan paru-paru adalah paus', 'Sebagian paus bukan mamalia', 'Tidak dapat disimpulkan'],
+      answer: 'b',
+      note: 'Jawaban: Paus bernapas dengan paru-paru (b), sesuai penalaran deduktif langsung.',
+    },
+    high: 'Mampu menarik kesimpulan secara logis, objektif, dan runtut dari informasi yang tersedia.',
+    low: 'Perlu melatih ketelitian dalam membaca premis dan menghindari asumsi di luar fakta.',
+    items: [
+      {
+        id: 'LO-1',
+        q: 'Semua peserta pelatihan wajib membawa kartu identitas. Sebagian mahasiswa adalah peserta pelatihan. Kesimpulan yang paling tepat adalah...',
+        options: [
+          'Semua mahasiswa wajib membawa kartu identitas',
+          'Sebagian mahasiswa wajib membawa kartu identitas',
+          'Semua yang membawa kartu identitas adalah mahasiswa',
+          'Tidak ada mahasiswa yang menjadi peserta pelatihan',
+          'Sebagian peserta pelatihan bukan mahasiswa yang membawa kartu identitas',
+        ],
+        answer: 'b',
+      },
+      {
+        id: 'LO-2',
+        q: 'Jika sistem server padam, maka aplikasi tidak dapat diakses. Hari ini aplikasi dapat diakses dengan normal. Kesimpulan yang sah adalah...',
+        options: [
+          'Sistem server hari ini sedang padam sebagian',
+          'Jika aplikasi dapat diakses, maka server baru saja diperbaiki',
+          'Sistem server hari ini tidak padam',
+          'Aplikasi dapat diakses walaupun server padam',
+          'Tidak dapat ditarik kesimpulan apa pun',
+        ],
+        answer: 'c',
+      },
+      {
+        id: 'LO-3',
+        q: 'Dalam sebuah antrean: Rina berada tepat di depan Budi. Sinta berada di belakang Budi, namun di depan Dodi. Andi berada di paling depan. Siapakah yang berada pada urutan ke-3 dari depan?',
+        options: ['Andi', 'Rina', 'Budi', 'Sinta', 'Dodi'],
+        answer: 'c',
+      },
+      {
+        id: 'LO-4',
+        q: 'Semua karyawan divisi IT menguasai bahasa pemrograman. Ingkaran (negasi) yang tepat dari pernyataan tersebut adalah...',
+        options: [
+          'Tidak ada karyawan divisi IT yang menguasai bahasa pemrograman',
+          'Semua karyawan bukan divisi IT tidak menguasai bahasa pemrograman',
+          'Ada karyawan divisi IT yang tidak menguasai bahasa pemrograman',
+          'Sebagian karyawan yang menguasai bahasa pemrograman bukan divisi IT',
+          'Semua karyawan divisi IT tidak menguasai bahasa pemrograman',
+        ],
+        answer: 'c',
+      },
+      {
+        id: 'LO-5',
+        q: 'Nilai ujian Tari lebih tinggi daripada nilai Sari, tetapi lebih rendah daripada nilai Riko. Nilai Doni lebih tinggi daripada nilai Riko. Siapakah yang memiliki nilai paling rendah?',
+        options: ['Doni', 'Riko', 'Tari', 'Sari', 'Tari dan Sari sama rendahnya'],
+        answer: 'd',
+      },
+    ],
+  },
 ];
 
 export const IST_TOTAL_ITEMS = IST_SUBTESTS.reduce((n, s) => n + s.items.length, 0);

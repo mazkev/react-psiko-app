@@ -39,8 +39,10 @@ export function scoreIST(answers = {}) {
 
   const verbalSt = subtests.filter((s) => ['SE', 'WA', 'AN', 'GE'].includes(s.code));
   const numSt = subtests.filter((s) => ['RA', 'ZR'].includes(s.code));
+  const logicSt = subtests.filter((s) => ['LO'].includes(s.code));
   const verbal = verbalSt.reduce((n, s) => n + s.raw, 0) / verbalSt.reduce((n, s) => n + s.max, 0);
   const numeric = numSt.reduce((n, s) => n + s.raw, 0) / numSt.reduce((n, s) => n + s.max, 0);
+  const logic = logicSt.length ? logicSt.reduce((n, s) => n + s.raw, 0) / logicSt.reduce((n, s) => n + s.max, 0) : pct;
 
   const strengths = subtests.filter((s) => s.pct >= 0.8);
   const weaknesses = subtests.filter((s) => s.pct < 0.6);
@@ -54,7 +56,7 @@ export function scoreIST(answers = {}) {
     `Peserta menjawab benar ${raw} dari ${max} soal (${Math.round(pct * 100)}%). ` +
     `Estimasi taraf kecerdasan berada pada kategori ${category} (perkiraan IQ ≈ ${iq}). ${thinking}`;
 
-  return { subtests, raw, max, pct, iq, category, verbal, numeric, strengths, weaknesses, summary };
+  return { subtests, raw, max, pct, iq, category, verbal, numeric, logic, strengths, weaknesses, summary };
 }
 
 /* ============================ DISC ============================ */
@@ -163,11 +165,23 @@ export function scorePAPI(answers = {}) {
   if (get('R') >= 6) notes.push('Memiliki minat kuat pada analisis dan konsep; cocok untuk peran perencanaan, riset, atau strategi.');
   if (!notes.length) notes.push('Profil kebutuhan relatif seimbang tanpa kecenderungan yang ekstrem.');
 
+  const needs = dims.filter((d) => d.kind === 'need');
+  const roles = dims.filter((d) => d.kind === 'role');
+  const needAvg = +(needs.reduce((n, d) => n + d.score, 0) / needs.length).toFixed(1);
+  const roleAvg = +(roles.reduce((n, d) => n + d.score, 0) / roles.length).toFixed(1);
+  let balanceNote;
+  if (Math.abs(needAvg - roleAvg) < 0.8)
+    balanceNote = `Skor Kebutuhan (${needAvg}/9) dan Peran (${roleAvg}/9) relatif seimbang: dorongan internal selaras dengan peran kerja yang dijalankan.`;
+  else if (needAvg > roleAvg)
+    balanceNote = `Dorongan Kebutuhan (${needAvg}/9) lebih tinggi daripada Peran (${roleAvg}/9): memiliki ekspektasi/motivasi internal yang kuat, perlu penyaluran peran kerja yang sesuai.`;
+  else
+    balanceNote = `Skor Peran (${roleAvg}/9) lebih tinggi daripada Kebutuhan (${needAvg}/9): cenderung adaptif menjalankan tuntutan peran kerja secara profesional.`;
+
   const summary =
     `Aspek paling menonjol: ${top.map((d) => `${d.name} (${d.code}=${d.score})`).join(', ')}. ` +
     `Aspek paling rendah: ${bottom.map((d) => `${d.name} (${d.code}=${d.score})`).join(', ')}.`;
 
-  return { dims, areas, top, bottom, notes, summary };
+  return { dims, areas, top, bottom, notes, needAvg, roleAvg, balanceNote, summary };
 }
 
 /* ============================ MSDT ============================ */
@@ -230,7 +244,14 @@ export function scoreBDI(answers = {}) {
     (total > 13 ? `Keluhan paling banyak muncul pada aspek ${topCluster.label.toLowerCase()}. ` : '') +
     (riskFlag ? 'Terdapat indikasi pikiran untuk mengakhiri hidup yang memerlukan perhatian segera.' : '');
 
-  return { items, total, level, clusters, prominent, riskFlag, summary };
+  const readiness =
+    total <= 13
+      ? 'Kondisi emosional tergolong stabil dan siap menjalani aktivitas maupun tuntutan kerja.'
+      : total <= 19
+      ? 'Stabilitas emosional cukup terjaga, namun perlu memperhatikan manajemen stres dan waktu istirahat.'
+      : 'Beban emosional tampak cukup tinggi dan berpotensi memengaruhi fokus serta energi kerja.';
+
+  return { items, total, level, clusters, prominent, riskFlag, readiness, summary };
 }
 
 /* ============================ RANGKUMAN ============================ */
