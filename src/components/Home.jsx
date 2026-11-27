@@ -69,11 +69,11 @@ export default function Home({ state, historyCount, onSaveParticipant, onStart, 
     <div className="home">
       <section className="hero">
         <div>
-          <span className="pill">5 Alat Tes · Hasil & Analisa Otomatis</span>
-          <h1>Asesmen Psikologi Terpadu</h1>
+          <span className="pill">Asesmen Psikologi & Karier · 6 Alat Tes</span>
+          <h1>Kenali Potensi &amp; Arah Karier Anda</h1>
           <p>
-            Kerjakan rangkaian tes IST, DISC, PAPI Kostick, MSDT, dan BDI. Setelah selesai, Anda akan mendapatkan
-            rekap jawaban beserta analisa kepribadian, kecerdasan, gaya kerja, gaya manajemen, dan kondisi emosional.
+            Ikuti rangkaian asesmen IST, DISC, PAPI Kostick, MSDT, BDI, dan Figural &amp; Spasial. Dapatkan analisa
+            kepribadian, gaya kerja, kekuatan kognitif, serta rekomendasi karier yang paling sesuai secara instan.
           </p>
         </div>
         <div className="hero-stat">
