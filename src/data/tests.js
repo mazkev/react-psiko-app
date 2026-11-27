@@ -49,6 +49,16 @@ export const TESTS = [
     icon: '💙',
     color: '#8b5cf6',
   },
+  {
+    id: 'figural',
+    name: 'Figural & Spasial',
+    fullName: 'Penalaran Gambar, Rotasi & Matriks',
+    desc: 'Mengukur kecerdasan visual-spasial melalui 15 soal gambar: rotasi, pencerminan, deret, analogi, dan matriks.',
+    items: 15,
+    minutes: 10,
+    icon: '🔷',
+    color: '#06b6d4',
+  },
 ];
 
 export const TEST_MAP = Object.fromEntries(TESTS.map((t) => [t.id, t]));

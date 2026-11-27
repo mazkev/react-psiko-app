@@ -105,6 +105,62 @@ function Shape({ s, cx = 32, cy = 32 }) {
         strokeWidth="2.2"
       />
     );
+  } else if (kind === 'hexagon') {
+    el = (
+      <polygon
+        points="0,-20 17,-10 17,10 0,20 -17,10 -17,-10"
+        fill={color}
+        stroke={strokeColor}
+        strokeWidth="2.5"
+        strokeLinejoin="round"
+      />
+    );
+  } else if (kind === 'cross') {
+    el = (
+      <path
+        d="M-6,-18 H6 V-6 H18 V6 H6 V18 H-6 V6 H-18 V-6 H-6 Z"
+        fill={color === 'none' ? '#e0e7ff' : color}
+        stroke={strokeColor}
+        strokeWidth="2.2"
+        strokeLinejoin="round"
+      />
+    );
+  } else if (kind === 'tshape') {
+    el = (
+      <path
+        d="M-16,-16 H16 V-6 H5 V18 H-5 V-6 H-16 Z"
+        fill="#e0e7ff"
+        stroke="#4f46e5"
+        strokeWidth="2.5"
+        strokeLinejoin="round"
+      />
+    );
+  } else if (kind === 'corner-dot') {
+    // Kotak dengan 1 titik di sudut kanan atas pada rot=0
+    el = (
+      <g>
+        <rect x={-18} y={-18} width={36} height={36} rx={4} fill="none" stroke="#1e293b" strokeWidth="2.2" />
+        <circle cx={10} cy={-10} r="5" fill="#4f46e5" />
+      </g>
+    );
+  } else if (kind === 'half-circle') {
+    el = (
+      <path
+        d="M-18,4 A18,18 0 0,1 18,4 Z"
+        fill={color === 'none' ? '#e0e7ff' : color}
+        stroke="#4f46e5"
+        strokeWidth="2.4"
+        strokeLinejoin="round"
+      />
+    );
+  } else if (kind === 'two-rects') {
+    // Dua persegi panjang membentuk T/sudut untuk soal gabungan
+    el = (
+      <g>
+        <rect x={-18} y={-14} width={36} height={12} fill="#e0e7ff" stroke="#4f46e5" strokeWidth="2.2" />
+        <rect x={-6} y={-2} width={12} height={18} fill="#e0e7ff" stroke="#4f46e5" strokeWidth="2.2" />
+      </g>
+    );
   }
 
   return (
@@ -179,14 +235,38 @@ export default function FiguralSvg({ spec, size = 'stimulus' }) {
   }
 
   if (spec.mode === 'pieces') {
-    // Potongan bangun: Persegi + Segitiga
+    // Potongan bangun: default persegi + segitiga, atau custom pieces
     return (
       <svg viewBox="0 0 180 72" className="figural-stimulus" style={{ maxWidth: 210 }}>
         <rect x={6} y={6} width={76} height={60} rx={10} fill="#f8fafc" stroke="#cbd5e1" strokeWidth="1.5" />
-        <rect x={26} y={18} width={36} height={36} fill="#e0e7ff" stroke="#4f46e5" strokeWidth="2.2" />
+        {spec.left ? (
+          <Shape s={spec.left} cx={44} cy={36} />
+        ) : (
+          <rect x={26} y={18} width={36} height={36} fill="#e0e7ff" stroke="#4f46e5" strokeWidth="2.2" />
+        )}
         <text x={92} y={42} textAnchor="middle" fontSize="18" fontWeight="800" fill="#64748b">+</text>
         <rect x={102} y={6} width={72} height={60} rx={10} fill="#f8fafc" stroke="#cbd5e1" strokeWidth="1.5" />
-        <polygon points="138,16 160,50 116,50" fill="#e0e7ff" stroke="#4f46e5" strokeWidth="2.2" strokeLinejoin="round" />
+        {spec.right ? (
+          <Shape s={spec.right} cx={138} cy={36} />
+        ) : (
+          <polygon points="138,16 160,50 116,50" fill="#e0e7ff" stroke="#4f46e5" strokeWidth="2.2" strokeLinejoin="round" />
+        )}
+      </svg>
+    );
+  }
+
+  if (spec.mode === 'matrix') {
+    // Matriks 2x2: [tl, tr, bl, ?]
+    return (
+      <svg viewBox="0 0 144 144" className="figural-stimulus" style={{ maxWidth: 160 }}>
+        <rect x={4} y={4} width={64} height={64} rx={10} fill="#f8fafc" stroke="#cbd5e1" strokeWidth="1.5" />
+        <Shape s={spec.cells[0]} cx={36} cy={36} />
+        <rect x={76} y={4} width={64} height={64} rx={10} fill="#f8fafc" stroke="#cbd5e1" strokeWidth="1.5" />
+        <Shape s={spec.cells[1]} cx={108} cy={36} />
+        <rect x={4} y={76} width={64} height={64} rx={10} fill="#f8fafc" stroke="#cbd5e1" strokeWidth="1.5" />
+        <Shape s={spec.cells[2]} cx={36} cy={108} />
+        <rect x={76} y={76} width={64} height={64} rx={10} fill="#eef2ff" stroke="#6366f1" strokeWidth="2" strokeDasharray="4 3" />
+        <text x={108} y={116} textAnchor="middle" fontSize="24" fontWeight="800" fill="#4f46e5">?</text>
       </svg>
     );
   }

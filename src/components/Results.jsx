@@ -571,6 +571,76 @@ function BDIResult({ r }) {
   );
 }
 
+/* ----------------------------- FIGURAL ----------------------------- */
+function FiguralResult({ r }) {
+  return (
+    <Section id="figural" icon="🔷" title="Figural & Spasial" subtitle="Penalaran gambar, rotasi, refleksi & matriks">
+      <div className="kpis">
+        <div className="kpi">
+          <span>Skor Benar</span>
+          <b>
+            {r.raw}/{r.max}
+          </b>
+        </div>
+        <div className="kpi">
+          <span>Persentase</span>
+          <b>{pct(r.pct)}</b>
+        </div>
+        <div className="kpi">
+          <span>Kategori</span>
+          <b>{r.level.label}</b>
+        </div>
+      </div>
+
+      <h4>Profil per Kategori</h4>
+      <BarList
+        items={r.categories.map((c) => ({
+          label: c.name,
+          value: c.raw,
+          max: c.max,
+          display: `${c.raw}/${c.max}`,
+          color: c.pct >= 0.8 ? '#10b981' : c.pct >= 0.6 ? '#06b6d4' : '#f59e0b',
+        }))}
+      />
+
+      <Analysis>
+        <p>{r.summary}</p>
+      </Analysis>
+
+      <details className="answers">
+        <summary>Lihat jawaban & kunci jawaban</summary>
+        <table className="table compact">
+          <thead>
+            <tr>
+              <th>No</th>
+              <th>Kategori</th>
+              <th>Soal</th>
+              <th>Jawaban Anda</th>
+              <th>Kunci</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            {r.items.map((it, n) => {
+              const fmt = (v) => (v ? `${v}. ${it.options[LETTERS.indexOf(v)]?.label}` : '—');
+              return (
+                <tr key={it.id}>
+                  <td>{n + 1}</td>
+                  <td>{it.category}</td>
+                  <td>{it.q}</td>
+                  <td>{fmt(it.given)}</td>
+                  <td>{fmt(it.answer)}</td>
+                  <td>{it.correct ? '✅' : '❌'}</td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </details>
+    </Section>
+  );
+}
+
 /* ----------------------------- MAIN ----------------------------- */
 export default function Results({ state, isArchived, onSaveHistory, onBack, onReset }) {
   const { participant, answers, done } = state;
@@ -676,6 +746,15 @@ export default function Results({ state, isArchived, onSaveHistory, onBack, onRe
               <span>Skor {r.bdi.total}/63</span>
             </div>
           )}
+          {r.figural && (
+            <div className="summary-card" style={{ '--c': '#06b6d4' }}>
+              <small>Figural & Spasial</small>
+              <b>{r.figural.level.label}</b>
+              <span>
+                {r.figural.raw}/{r.figural.max} ({pct(r.figural.pct)})
+              </span>
+            </div>
+          )}
         </div>
 
         <Analysis title="Analisa Terpadu">
@@ -722,6 +801,7 @@ export default function Results({ state, isArchived, onSaveHistory, onBack, onRe
       {r.papi && <PAPIResult r={r.papi} answers={answers.papi} />}
       {r.msdt && <MSDTResult r={r.msdt} answers={answers.msdt} />}
       {r.bdi && <BDIResult r={r.bdi} />}
+      {r.figural && <FiguralResult r={r.figural} />}
 
       <div className="card disclaimer-card">
         <b>Catatan:</b> Butir soal pada aplikasi ini disusun ulang mengikuti format dan konstruk masing-masing alat tes untuk

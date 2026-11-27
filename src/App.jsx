@@ -4,6 +4,7 @@ import ISTTest from './components/ISTTest.jsx';
 import DISCTest from './components/DISCTest.jsx';
 import PairTest from './components/PairTest.jsx';
 import BDITest from './components/BDITest.jsx';
+import FiguralTest from './components/FiguralTest.jsx';
 import Results from './components/Results.jsx';
 import History from './components/History.jsx';
 import { PAPI_PAIRS } from './data/papi.js';
@@ -13,7 +14,7 @@ const KEY = 'psikotes-app-v1';
 const HIST_KEY = 'psikotes-history-v1';
 const empty = () => ({
   participant: null,
-  answers: { ist: {}, disc: {}, papi: {}, msdt: {}, bdi: {} },
+  answers: { ist: {}, disc: {}, papi: {}, msdt: {}, bdi: {}, figural: {} },
   done: {},
 });
 
@@ -128,6 +129,9 @@ export default function App() {
       break;
     case 'bdi':
       content = <BDITest {...common('bdi')} />;
+      break;
+    case 'figural':
+      content = <FiguralTest {...common('figural')} />;
       break;
     case 'results':
       content = (

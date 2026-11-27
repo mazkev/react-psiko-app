@@ -3,6 +3,7 @@ import { DISC_DIMS, DISC_PROFILES, DISC_PATTERNS } from './data/disc.js';
 import { PAPI_DIMS, PAPI_PAIRS, PAPI_PER_DIM, PAPI_AREAS } from './data/papi.js';
 import { MSDT_STYLES, MSDT_PAIRS, MSDT_BASIC } from './data/msdt.js';
 import { BDI_ITEMS, BDI_LEVELS } from './data/bdi.js';
+import { FIGURAL_ITEMS } from './data/figural.js';
 
 /* ============================ IST ============================ */
 function levelFromPct(p) {
@@ -256,6 +257,35 @@ export function scoreBDI(answers = {}) {
   return { items, total, level, clusters, prominent, riskFlag, readiness, summary };
 }
 
+/* ============================ FIGURAL ============================ */
+export function scoreFigural(answers = {}) {
+  const items = FIGURAL_ITEMS.map((it) => {
+    const given = answers[it.id];
+    const correct = given === it.answer;
+    return { ...it, given, correct };
+  });
+  const raw = items.filter((i) => i.correct).length;
+  const max = items.length;
+  const pct = raw / max;
+  const level = levelFromPct(pct);
+
+  const catNames = [...new Set(FIGURAL_ITEMS.map((i) => i.category))];
+  const categories = catNames.map((name) => {
+    const list = items.filter((i) => i.category === name);
+    const cRaw = list.filter((i) => i.correct).length;
+    return { name, raw: cRaw, max: list.length, pct: cRaw / list.length };
+  });
+
+  const strong = categories.filter((c) => c.pct >= 0.8).map((c) => c.name);
+  const weak = categories.filter((c) => c.pct < 0.6).map((c) => c.name);
+  const summary =
+    `Peserta menjawab benar ${raw} dari ${max} soal figural (${Math.round(pct * 100)}%) — kategori ${level.label}. ` +
+    (strong.length ? `Menonjol pada: ${strong.join(', ')}. ` : '') +
+    (weak.length ? `Perlu latihan pada: ${weak.join(', ')}.` : 'Kemampuan visual-spasial merata di semua kategori.');
+
+  return { items, raw, max, pct, level, categories, strong, weak, summary };
+}
+
 /* ============================ RANGKUMAN ============================ */
 export function scoreAll(answers, done) {
   const r = {};
@@ -264,6 +294,7 @@ export function scoreAll(answers, done) {
   if (done.papi) r.papi = scorePAPI(answers.papi);
   if (done.msdt) r.msdt = scoreMSDT(answers.msdt);
   if (done.bdi) r.bdi = scoreBDI(answers.bdi);
+  if (done.figural) r.figural = scoreFigural(answers.figural);
   return r;
 }
 
@@ -301,6 +332,12 @@ export function buildOverall(r, participant) {
     paras.push({
       title: 'Kondisi Emosional',
       text: `Hasil skrining suasana hati berada pada tingkat ${r.bdi.level.label} (skor ${r.bdi.total}). ${r.bdi.level.desc} ${r.bdi.level.advice}`,
+    });
+  }
+  if (r.figural) {
+    paras.push({
+      title: 'Penalaran Figural & Spasial',
+      text: `${name} memperoleh skor ${r.figural.raw}/${r.figural.max} (${Math.round(r.figural.pct * 100)}%, kategori ${r.figural.level.label}). ${r.figural.summary}`,
     });
   }
 
@@ -356,6 +393,10 @@ export function buildOverall(r, participant) {
     if (k === 'executive' || k === 'benevolent') addJob('Manajer / Kepala Divisi', `Gaya MSDT ${r.msdt.finalStyle.name}`);
     else if (k === 'developer') addJob('People Manager / Coach / HRD', 'Gaya MSDT Developer');
     else if (k === 'bureaucrat') addJob('Manajer Operasional / Compliance', 'Gaya MSDT Bureaucrat');
+  }
+  if (r.figural && r.figural.pct >= 0.75) {
+    addJob('Desainer / Arsitek / UI-UX', 'Penalaran figural & spasial tinggi');
+    addJob('Engineering / Teknik', 'Visualisasi ruang & pola kuat');
   }
   const jobs = [...jobMap.entries()].slice(0, 6).map(([role, reasons]) => ({ role, reason: reasons.join(' · ') }));
 

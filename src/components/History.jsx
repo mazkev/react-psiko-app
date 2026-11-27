@@ -88,6 +88,7 @@ export default function History({ history, onBack, onViewEntry, onDeleteEntry, o
                       {r.papi && <span className="chip good">PAPI: {r.papi.top.slice(0, 3).map((d) => d.code).join('·')}</span>}
                       {r.msdt && <span className="chip good">MSDT: {r.msdt.finalStyle.name}</span>}
                       {r.bdi && <span className="chip warn">BDI: {r.bdi.level.label} ({r.bdi.total})</span>}
+                      {r.figural && <span className="chip good">Figural: {r.figural.raw}/{r.figural.max}</span>}
                     </div>
                   </div>
                   <div className="row-gap">
@@ -211,6 +212,19 @@ export default function History({ history, onBack, onViewEntry, onDeleteEntry, o
                         <>
                           <b>{c.r.bdi.level.label}</b> (Skor {c.r.bdi.total}/63)
                           <div className="muted small">{c.r.bdi.riskFlag ? '⚠️ Indikasi butir kritis' : 'Normal / stabil'}</div>
+                        </>
+                      ) : '—'}
+                    </td>
+                  ))}
+                </tr>
+                <tr>
+                  <td><b>Figural & Spasial</b></td>
+                  {compared.map((c) => (
+                    <td key={c.id}>
+                      {c.r.figural ? (
+                        <>
+                          <b>{c.r.figural.raw}/{c.r.figural.max}</b> ({pct(c.r.figural.pct)})
+                          <div className="muted small">{c.r.figural.level.label}</div>
                         </>
                       ) : '—'}
                     </td>
