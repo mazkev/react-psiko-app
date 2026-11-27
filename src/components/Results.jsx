@@ -53,9 +53,9 @@ function ISTResult({ r }) {
           <b>{r.category}</b>
         </div>
         <div className="kpi">
-          <span>Verbal / Numerik / Logika</span>
+          <span>Verbal / Numerik / Logika / Figural</span>
           <b>
-            {pct(r.verbal)} / {pct(r.numeric)} / {pct(r.logic)}
+            {pct(r.verbal)} / {pct(r.numeric)} / {pct(r.logic)} / {pct(r.figural)}
           </b>
         </div>
       </div>
@@ -119,7 +119,11 @@ function ISTResult({ r }) {
               </thead>
               <tbody>
                 {s.items.map((it, n) => {
-                  const fmt = (v) => (s.type === 'mc' ? (v ? `${v}. ${it.options[LETTERS.indexOf(v)]}` : '—') : v ?? '—');
+                  const fmt = (v) => {
+                    if (s.type === 'mc') return v ? `${v}. ${it.options[LETTERS.indexOf(v)]}` : '—';
+                    if (s.type === 'figural') return v ? `${v}. ${it.options[LETTERS.indexOf(v)]?.label}` : '—';
+                    return v ?? '—';
+                  };
                   return (
                     <tr key={it.id}>
                       <td>{n + 1}</td>

@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { IST_SUBTESTS, IST_TOTAL_ITEMS } from '../data/ist.js';
 import { LETTERS, formatTime } from '../utils.js';
 import { TestHeader, Instruction } from './common.jsx';
+import FiguralSvg from './FiguralSvg.jsx';
 
 export default function ISTTest({ answers, onAnswer, onFinish, onExit }) {
   // Saat melanjutkan, mulai dari subtes pertama yang belum dijawab penuh
@@ -64,11 +65,13 @@ export default function ISTTest({ answers, onAnswer, onFinish, onExit }) {
           <div className="example">
             <strong>Contoh:</strong>
             <p>{st.example.q}</p>
+            {st.example.svg && <FiguralSvg spec={st.example.svg} />}
             {st.example.options && (
               <div className="options inline">
                 {st.example.options.map((o, i) => (
-                  <span key={i} className={`option static ${LETTERS[i] === st.example.answer ? 'selected' : ''}`}>
-                    <b>{LETTERS[i]}.</b> {o}
+                  <span key={i} className={`option static ${st.type === 'figural' ? 'figural' : ''} ${LETTERS[i] === st.example.answer ? 'selected' : ''}`}>
+                    <b>{LETTERS[i]}.</b>{' '}
+                    {st.type === 'figural' ? <FiguralSvg spec={o.svg} size="sm" /> : o}
                   </span>
                 ))}
               </div>
@@ -103,16 +106,18 @@ export default function ISTTest({ answers, onAnswer, onFinish, onExit }) {
           <div className="q-no">{n + 1}</div>
           <div className="q-body">
             <p className="q-text">{it.q}</p>
-            {st.type === 'mc' ? (
+            {it.svg && <FiguralSvg spec={it.svg} />}
+            {st.type === 'mc' || st.type === 'figural' ? (
               <div className="options inline">
                 {it.options.map((o, i) => (
                   <button
                     key={i}
                     type="button"
-                    className={`option ${answers[it.id] === LETTERS[i] ? 'selected' : ''}`}
+                    className={`option ${st.type === 'figural' ? 'figural' : ''} ${answers[it.id] === LETTERS[i] ? 'selected' : ''}`}
                     onClick={() => onAnswer(it.id, LETTERS[i])}
                   >
-                    <b>{LETTERS[i]}.</b> {o}
+                    <b>{LETTERS[i]}.</b>{' '}
+                    {st.type === 'figural' ? <FiguralSvg spec={o.svg} /> : o}
                   </button>
                 ))}
               </div>

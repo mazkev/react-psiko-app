@@ -173,6 +173,9 @@ input:focus, select:focus { outline: 2px solid var(--primary-soft); border-color
 .option.selected { border-color: var(--primary); background: var(--primary-soft); color: #312e81; font-weight: 600; }
 .option.static { cursor: default; }
 .option.block { display: flex; gap: 12px; align-items: center; padding: 14px 16px; }
+.option.figural { display: inline-flex; align-items: center; gap: 8px; padding: 8px 12px; }
+.figural-stimulus { display: block; width: 100%; height: auto; margin: 8px 0 12px; }
+.figural-opt { display: block; }
 .radio-dot { flex: none; width: 18px; height: 18px; border-radius: 50%; border: 2px solid #cbd5e1; }
 .option.selected .radio-dot { border-color: var(--primary); background: radial-gradient(var(--primary) 45%, #fff 50%); }
 .num-input { width: 220px; font-size: 1rem; }

@@ -40,9 +40,11 @@ export function scoreIST(answers = {}) {
   const verbalSt = subtests.filter((s) => ['SE', 'WA', 'AN', 'GE'].includes(s.code));
   const numSt = subtests.filter((s) => ['RA', 'ZR'].includes(s.code));
   const logicSt = subtests.filter((s) => ['LO'].includes(s.code));
+  const figuralSt = subtests.filter((s) => ['FA'].includes(s.code));
   const verbal = verbalSt.reduce((n, s) => n + s.raw, 0) / verbalSt.reduce((n, s) => n + s.max, 0);
   const numeric = numSt.reduce((n, s) => n + s.raw, 0) / numSt.reduce((n, s) => n + s.max, 0);
   const logic = logicSt.length ? logicSt.reduce((n, s) => n + s.raw, 0) / logicSt.reduce((n, s) => n + s.max, 0) : pct;
+  const figural = figuralSt.length ? figuralSt.reduce((n, s) => n + s.raw, 0) / figuralSt.reduce((n, s) => n + s.max, 0) : pct;
 
   const strengths = subtests.filter((s) => s.pct >= 0.8);
   const weaknesses = subtests.filter((s) => s.pct < 0.6);
@@ -56,7 +58,7 @@ export function scoreIST(answers = {}) {
     `Peserta menjawab benar ${raw} dari ${max} soal (${Math.round(pct * 100)}%). ` +
     `Estimasi taraf kecerdasan berada pada kategori ${category} (perkiraan IQ ≈ ${iq}). ${thinking}`;
 
-  return { subtests, raw, max, pct, iq, category, verbal, numeric, logic, strengths, weaknesses, summary };
+  return { subtests, raw, max, pct, iq, category, verbal, numeric, logic, figural, strengths, weaknesses, summary };
 }
 
 /* ============================ DISC ============================ */

@@ -211,6 +211,126 @@ export const IST_SUBTESTS = [
       },
     ],
   },
+  {
+    code: 'FA',
+    name: 'Figurenauswahl',
+    label: 'Penalaran Figural & Spasial (Gambar)',
+    type: 'figural',
+    seconds: 240,
+    measures: 'Kemampuan berpikir spasial, rotasi mental, pengenalan pola visual, dan logika bentuk.',
+    instruction: 'Amati pola, rotasi, pencerminan, atau gabungan bentuk pada gambar soal, lalu pilih satu gambar jawaban (a–e) yang paling tepat.',
+    example: {
+      q: 'Panah berputar 90° searah jarum jam pada setiap langkah. Gambar manakah yang melanjutkan pola berikut?',
+      svg: {
+        mode: 'series',
+        steps: [
+          { kind: 'arrow', rot: 0 },
+          { kind: 'arrow', rot: 90 },
+          { kind: 'arrow', rot: 180 },
+        ],
+      },
+      options: [
+        { label: 'Atas (0°)', svg: { mode: 'shape', kind: 'arrow', rot: 0 } },
+        { label: 'Kanan (90°)', svg: { mode: 'shape', kind: 'arrow', rot: 90 } },
+        { label: 'Bawah (180°)', svg: { mode: 'shape', kind: 'arrow', rot: 180 } },
+        { label: 'Kiri (270°)', svg: { mode: 'shape', kind: 'arrow', rot: 270 } },
+        { label: 'Diagonal (45°)', svg: { mode: 'shape', kind: 'arrow', rot: 45 } },
+      ],
+      answer: 'd',
+      note: 'Jawaban: d (Kiri / 270°), karena berputar 90° searah jarum jam dari posisi bawah (180°).',
+    },
+    high: 'Unggul dalam visualisasi ruang, mengenali pola visual, dan membayangkan transformasi bentuk.',
+    low: 'Perlu melatih ketelitian visual dalam mengamati rotasi, pencerminan, dan perubahan pola gambar.',
+    items: [
+      {
+        id: 'FA-1',
+        q: 'Bentuk L berikut berputar 90° searah jarum jam pada setiap langkah. Manakah posisi berikutnya?',
+        svg: {
+          mode: 'series',
+          steps: [
+            { kind: 'lshape', rot: 0 },
+            { kind: 'lshape', rot: 90 },
+            { kind: 'lshape', rot: 180 },
+          ],
+        },
+        options: [
+          { label: 'Rotasi 0°', svg: { mode: 'shape', kind: 'lshape', rot: 0 } },
+          { label: 'Rotasi 90°', svg: { mode: 'shape', kind: 'lshape', rot: 90 } },
+          { label: 'Rotasi 270°', svg: { mode: 'shape', kind: 'lshape', rot: 270 } },
+          { label: 'Rotasi 180°', svg: { mode: 'shape', kind: 'lshape', rot: 180 } },
+          { label: 'Rotasi 45°', svg: { mode: 'shape', kind: 'lshape', rot: 45 } },
+        ],
+        answer: 'c',
+      },
+      {
+        id: 'FA-2',
+        q: 'Pilih gambar yang merupakan hasil pencerminan (refleksi) terhadap garis cermin vertikal merah:',
+        svg: {
+          mode: 'mirror',
+          source: { kind: 'flag' },
+        },
+        options: [
+          { label: 'Sama (tidak dicerminkan)', svg: { mode: 'shape', kind: 'flag' } },
+          { label: 'Cermin vertikal (kiri-kanan)', svg: { mode: 'shape', kind: 'flag-flip' } },
+          { label: 'Cermin horizontal (atas-bawah)', svg: { mode: 'shape', kind: 'flag-flip-v' } },
+          { label: 'Putar 90°', svg: { mode: 'shape', kind: 'flag', rot: 90 } },
+          { label: 'Putar 180°', svg: { mode: 'shape', kind: 'flag', rot: 180 } },
+        ],
+        answer: 'b',
+      },
+      {
+        id: 'FA-3',
+        q: 'Perhatikan penambahan jumlah titik pada kotak berikut. Gambar manakah yang melengkapi deret?',
+        svg: {
+          mode: 'series',
+          steps: [
+            { kind: 'grid-dots', count: 1 },
+            { kind: 'grid-dots', count: 2 },
+            { kind: 'grid-dots', count: 3 },
+          ],
+        },
+        options: [
+          { label: '1 titik', svg: { mode: 'shape', kind: 'grid-dots', count: 1 } },
+          { label: '2 titik', svg: { mode: 'shape', kind: 'grid-dots', count: 2 } },
+          { label: '3 titik', svg: { mode: 'shape', kind: 'grid-dots', count: 3 } },
+          { label: '4 titik', svg: { mode: 'shape', kind: 'grid-dots', count: 4 } },
+          { label: '4 titik (diputar 45°)', svg: { mode: 'shape', kind: 'grid-dots', count: 4, rot: 45 } },
+        ],
+        answer: 'd',
+      },
+      {
+        id: 'FA-4',
+        q: 'Analogi bentuk: Hubungan gambar 1 ke gambar 2 sama dengan gambar 3 ke gambar mana?',
+        svg: {
+          mode: 'analogy',
+          a: { kind: 'square', fill: 'none', scale: 1 },
+          b: { kind: 'square', fill: 'solid', scale: 0.65 },
+          c: { kind: 'triangle', fill: 'none', scale: 1 },
+        },
+        options: [
+          { label: 'Segitiga besar kosong', svg: { mode: 'shape', kind: 'triangle', fill: 'none', scale: 1 } },
+          { label: 'Segitiga besar penuh', svg: { mode: 'shape', kind: 'triangle', fill: 'solid', scale: 1 } },
+          { label: 'Segitiga kecil kosong', svg: { mode: 'shape', kind: 'triangle', fill: 'none', scale: 0.65 } },
+          { label: 'Segitiga kecil penuh', svg: { mode: 'shape', kind: 'triangle', fill: 'solid', scale: 0.65 } },
+          { label: 'Lingkaran kecil penuh', svg: { mode: 'shape', kind: 'circle', fill: 'solid', scale: 0.65 } },
+        ],
+        answer: 'd',
+      },
+      {
+        id: 'FA-5',
+        q: 'Jika kedua potongan bangun datar berikut digabungkan tanpa mengubah bentuk, manakah bangun utuh yang terbentuk?',
+        svg: { mode: 'pieces' },
+        options: [
+          { label: 'Persegi panjang', svg: { mode: 'shape', kind: 'rect' } },
+          { label: 'Belah ketupat', svg: { mode: 'shape', kind: 'diamond' } },
+          { label: 'Bentuk rumah', svg: { mode: 'shape', kind: 'house' } },
+          { label: 'Segi delapan', svg: { mode: 'shape', kind: 'octagon' } },
+          { label: 'Lingkaran', svg: { mode: 'shape', kind: 'circle', fill: 'accent' } },
+        ],
+        answer: 'c',
+      },
+    ],
+  },
 ];
 
 export const IST_TOTAL_ITEMS = IST_SUBTESTS.reduce((n, s) => n + s.items.length, 0);
